@@ -9,13 +9,33 @@ def toss_coin():
     toss_button.config(state="disabled")
     coin_result_label.config(text="Result: Tossing...")
 
+    try:
+        num_tosses = int(toss_count_entry.get())
+        if num_tosses < 1:
+            num_tosses = 1
+    except ValueError:
+        num_tosses = 1
+
     def animate_progress(value=0):
         if value <= 100:
             progressbar['value'] = value
             root.after(15, animate_progress, value + 1)  # 30ms * 100 = 3 seconds approx
         else:
-            result = secrets.choice(['Heads', 'Tails'])
-            coin_result_label.config(text=f"Result: {result}")
+            results = [secrets.choice(['●', '○']) for _ in range(num_tosses)]
+            if num_tosses == 1:
+                coin_result_label.config(text=f"Result: {results[0]}")
+                root.geometry("400x480")  # Reset to default height
+            else:
+                result_text = "Results: " + ", ".join(results)
+                coin_result_label.config(text=result_text)
+                # Dynamically adjust window height if too many results
+                if num_tosses > 20:
+                    # Estimate needed height: 480 + 10 * (num_tosses - 20) / 5
+                    extra_height = int(10 * ((num_tosses - 20) / 5))
+                    new_height = 480 + extra_height
+                    root.geometry(f"400x{new_height}")
+                else:
+                    root.geometry("400x480")  # Reset to default height
             toss_button.config(state="normal")
             progressbar['value'] = 0
 
@@ -61,7 +81,7 @@ def generate_number():
 
 root = tk.Tk()
 root.title("Coin Toss & RNG")
-root.geometry("400x430")
+root.geometry("400x480")
 root.resizable(False, False)
 style = Style(theme="superhero")
 
@@ -70,10 +90,20 @@ rounded_font = ("Noto Sans", 14)
 coin_label = Label(root, text="Coin Toss", font=rounded_font)
 coin_label.pack(pady=10)
 
+# Add frame for toss count input
+toss_count_frame = tk.Frame(root)
+toss_count_frame.pack(pady=5)
+
+toss_count_label = Label(toss_count_frame, text="Number of tosses:", font=("Noto Sans", 10))
+toss_count_label.grid(row=0, column=0, padx=5)
+toss_count_entry = Entry(toss_count_frame, width=5, bootstyle="info", font=("Noto Sans", 8))
+toss_count_entry.grid(row=0, column=1, padx=5)
+toss_count_entry.insert(0, "1")
+
 toss_button = Button(root, text="Toss Coin", command=toss_coin, bootstyle="success")
 toss_button.pack(pady=5)
 
-coin_result_label = Label(root, text="Result: ", font=rounded_font)
+coin_result_label = Label(root, text="Result: ", font=rounded_font, wraplength=350)
 coin_result_label.pack(pady=5)
 
 # Add progressbar under the result label
