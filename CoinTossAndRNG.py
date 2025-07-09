@@ -96,7 +96,7 @@ toss_count_frame.pack(pady=5)
 
 toss_count_label = Label(toss_count_frame, text="Number of tosses:", font=("Noto Sans", 10))
 toss_count_label.grid(row=0, column=0, padx=5)
-toss_count_entry = Entry(toss_count_frame, width=5, bootstyle="info", font=("Noto Sans", 8))
+toss_count_entry = Entry(toss_count_frame, width=5, bootstyle="success", font=("Noto Sans", 8))
 toss_count_entry.grid(row=0, column=1, padx=5)
 toss_count_entry.insert(0, "1")
 
