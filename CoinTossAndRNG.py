@@ -79,6 +79,13 @@ def generate_number():
 
     animate_rng_progress()
 
+def on_enter_key(event):
+    # Check which widget has focus and call the appropriate function
+    if root.focus_get() == toss_count_entry:
+        toss_coin()
+    elif root.focus_get() in (min_entry, max_entry):
+        generate_number()
+
 root = tk.Tk()
 root.title("Coin Toss & RNG")
 root.geometry("400x480")
@@ -139,5 +146,10 @@ rng_progress.pack(pady=(0, 10))
 
 number_result_entry = Entry(root, width=15, font=("Noto Sans", 12), bootstyle="info", state='readonly')
 number_result_entry.pack(pady=5)
+
+# Bind the Enter key to the root window
+root.bind('<Return>', on_enter_key)
+
+toss_count_entry.focus_set()
 
 root.mainloop()
